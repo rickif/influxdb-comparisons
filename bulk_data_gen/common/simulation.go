@@ -13,6 +13,7 @@ const (
 	UseCaseGroupAggregate       = "group-agg"
 	UseCaseBareAggregate        = "bare-agg"
 	UseCaseGroupWindowTranspose = "group-window-transpose"
+	UseCaseMeasurements         = "measurements"
 )
 
 // Use case choices:
@@ -24,6 +25,7 @@ var UseCaseChoices = []string{
 	UseCaseWindowAggregate,
 	UseCaseGroupAggregate,
 	UseCaseBareAggregate,
+	UseCaseMeasurements,
 }
 
 // Simulator simulates a use case.
