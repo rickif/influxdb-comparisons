@@ -126,24 +126,21 @@ func (d *InfluxIot) StandAloneFilter(qi bulkQuerygen.Query) {
 }
 
 func (d *InfluxIot) MultiMeasurementOr(qi bulkQuerygen.Query, queryInterval time.Duration) {
-	interval := d.AllInterval.RandWindow(queryInterval)
+	// interval := d.AllInterval.RandWindow(queryInterval)
 
 	var query string
 	if d.language == InfluxQL {
-		query = fmt.Sprintf(`SELECT battery_voltage FROM air_condition_outdoor, air_condition_room, air_quality_room, camera_detection, door_state WHERE time > '%s' AND time < '%s'`, interval.StartString(), interval.EndString())
+		query = `SELECT "Field-1", "Field-2", "Field-3", "Field-4", "Field-5" FROM "Measurement-1", "Measurement-2", "Measurement-3", "Measurement-4", "Measurement-5" WHERE time >= '2019-01-01'`
 	} else {
-		query = fmt.Sprintf(`from(bucket: "%s") `+
-			`|> range(start: %s, stop: %s) `+
-			`|> filter(fn: (r) => r["_measurement"] == "air_condition_outdoor" or r["_measurement"] == "air_condition_room" or r["_measurement"] == "air_quality_room" or r["_measurement"] == "camera_detection" or r["_measurement"] == "door_state") `+
-			`|> filter(fn: (r) => r["_field"] == "battery_voltage") `+
-			`|> yield()`,
+		query = fmt.Sprintf(`from(bucket: "%s") 
+			|> range(start: 2019-01-01) 
+			|> filter(fn: (r) => r["_measurement"] == "Measurement-1" or r["_measurement"] == "Measurement-2" or r["_measurement"] == "Measurement-3" or r["_measurement"] == "Measurement-4" or r["_measurement"] == "Measurement-5") 
+			|> filter(fn: (r) => r["_field"] == "Field-1" or r["_field"] == "Field-2" or r["_field"] == "Field-3" or r["_field"] == "Field-4" or r["_field"] == "Field-5")`,
 			d.DatabaseName,
-			interval.StartString(),
-			interval.EndString(),
 		)
 	}
 
-	humanLabel := fmt.Sprintf(`InfluxDB (%s) Battery Voltage`, d.language)
+	humanLabel := fmt.Sprintf(`InfluxDB (%s) Multi-Measure Query`, d.language)
 	q := qi.(*bulkQuerygen.HTTPQuery)
 	d.getHttpQuery(humanLabel, "n/a", query, q)
 }
